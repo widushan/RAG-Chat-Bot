@@ -10,12 +10,16 @@ const {
   OPENAI_API_KEY
 } = process.env
 
-const openai = new OpenAI({
+// Initialize OpenAI only if API key is available
+const openai = OPENAI_API_KEY ? new OpenAI({
   apiKey: OPENAI_API_KEY
-})
+}) : null
 
-const client = new DataAPIClient(ASTRA_DB_APPLICATION_TOKEN)
-const db = client.db(ASTRA_DB_API_ENDPOINT)
+// Initialize Astra DB client only if credentials are available
+const client = ASTRA_DB_APPLICATION_TOKEN && ASTRA_DB_API_ENDPOINT 
+  ? new DataAPIClient(ASTRA_DB_APPLICATION_TOKEN)
+  : null
+const db = client && ASTRA_DB_API_ENDPOINT ? client.db(ASTRA_DB_API_ENDPOINT) : null
 
 export async function POST(req: Request) {
   try {
@@ -24,28 +28,31 @@ export async function POST(req: Request) {
 
     let docContext = ""
 
-    const embedding = await openai.embeddings.create({
-      model: "text-embedding-3-small",
-      input: latestMessage,
-      encoding_format: "float"
-    })
+    // Only proceed with embedding and database query if services are available
+    if (openai && db && ASTRA_DB_COLLECTION) {
+      try {
+        const embedding = await openai.embeddings.create({
+          model: "text-embedding-3-small",
+          input: latestMessage,
+          encoding_format: "float"
+        })
 
-    try {
-      const collection = await db.collection(ASTRA_DB_COLLECTION)
-      const cursor = collection.find(null, {
-        sort: {
-          $vector: embedding.data[0].embedding
-        },
-        limit: 10
-      })
+        const collection = await db.collection(ASTRA_DB_COLLECTION)
+        const cursor = collection.find(null, {
+          sort: {
+            $vector: embedding.data[0].embedding
+          },
+          limit: 10
+        })
 
-      const documents = await cursor.toArray()
-      const docsMap = documents?.map(doc => doc.text)
-      docContext = JSON.stringify(docsMap)
-    }
-    catch (err) {
-      console.log("Error querying db...")
-      docContext = ""
+        const documents = await cursor.toArray()
+        const docsMap = documents?.map(doc => doc.text)
+        docContext = JSON.stringify(docsMap)
+      }
+      catch (err) {
+        console.log("Error querying db...")
+        docContext = ""
+      }
     } 
 
     const template = {
@@ -65,6 +72,13 @@ export async function POST(req: Request) {
       ------------------
     `
     }
+    if (!openai) {
+      return new Response(JSON.stringify({ error: "OpenAI API key not configured" }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" }
+      })
+    }
+
     const response = await openai.chat.completions.create({
       model: "gpt-4",
       stream: true,
