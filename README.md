@@ -16,7 +16,6 @@ A sophisticated RAG (Retrieval-Augmented Generation) chatbot built with Next.js,
 - **Styling**: Tailwind CSS
 - **AI/ML**: LangChain.js, OpenAI API
 - **Database**: Vector database for document storage
-- **Deployment**: Vercel
 
 ## 📋 Prerequisites
 
@@ -141,7 +140,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Next.js](https://nextjs.org/) for the amazing React framework
 - [LangChain.js](https://js.langchain.com/) for the AI orchestration
 - [OpenAI](https://openai.com/) for the powerful AI models
-- [Vercel](https://vercel.com/) for the deployment platform
+
 
 ## 📞 Support
 
@@ -153,6 +152,6 @@ If you have any questions or need help, please:
 
 ---
 
-**Repository**: [https://github.com/yourusername/rag-chat-bot](https://github.com/yourusername/rag-chat-bot)
+**Repository**: [https://github.com/widushan/RAG-Chat-Bot.git](https://github.com/yourusername/rag-chat-bot)
 
-**Live Demo**: [https://your-demo-url.vercel.app](https://your-demo-url.vercel.app) (replace with your actual demo URL)
+
