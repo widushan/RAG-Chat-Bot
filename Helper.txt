@@ -1,0 +1,21 @@
+
+https://www.youtube.com/watch?v=d-VKYF4Zow0&t=669s
+
+
+npx create-next-app nextjs-f1gpt
+
+cd nextjs-f1gpt
+
+npm i @datastax/astra-db-ts langchain openai dotenv
+
+npm i ts-node
+
+npm i puppeteer
+
+npm i ai --legacy-peer-deps
+
+
+
+
+
+npm run dev

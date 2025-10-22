@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "ai": "^5.0.76",
+    "puppeteer": "^24.25.0"
+  }
+}
